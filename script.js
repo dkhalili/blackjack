@@ -170,7 +170,7 @@ var endRound = function endRound() {
 	$("#buttons").toggle();
 
 	if (fullDeck.length < 10) {
-		$("#winOrLose").text("shuffling deck");
+		$("#winOrLose").text("shuffling deck.... Shuffled, lets go!");
 		fullDeck = createDeck(1);
 	}
 }

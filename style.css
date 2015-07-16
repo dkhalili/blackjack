@@ -5,15 +5,15 @@ body {
 
 #dealer {
 	position:absolute;
-	margin-top:50px;
-	padding:0px 0px;
+	margin-top:100px;
+	padding-top:0px 0px;
 }
 
 #status {
-	margin-top:150px;
+	margin-top:50px;
 	height:100px;
-	width:200px;
-	padding:0px 0px;
+	width:500px;
+	padding-bottom:50px;
 
 
 }
