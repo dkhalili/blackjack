@@ -1,6 +1,5 @@
 
 //storing card numbers and suits in two different arrays
-var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 var suits = ["hearts", "diamonds", "spades", "clubs"];
 
 
@@ -8,30 +7,30 @@ var suits = ["hearts", "diamonds", "spades", "clubs"];
 var cards = function cards(number, suit) {
 	if (number === 1){
 	this.name = "A";
-	this.value = [number, number + 10]
-	this.suit = suit
+	this.value = number;
+	this.suit = suit;
 	}
 	else if ( number === 11) {
 	this.name = "J";
 	this.value = 10;
-	this.suit = suit
+	this.suit = suit;
 	}
 	else if ( number === 12) {
 	this.name = "Q";
 	this.value = 10;
-	this.suit = suit
+	this.suit = suit;
 
 	}
 	else if ( number === 13) {
 	this.name = "K";
 	this.value = 10;
-	this.suit = suit
+	this.suit = suit;
 
 	}
 	else {
 	this.name = number;
 	this.value = number;
-	this.suit = suit
+	this.suit = suit;
 	}
 }
 
@@ -63,37 +62,51 @@ fullDeck = createDeck(1);
 
 
 
-// var deckShuffled = [];
-// var shuffleDeck = function createDeck(object) {
-// 	for (var i = 0; i <= 52; i++)
-// 	var classCount = Math.floor(Math.random() * 4) + 1;
-// 	var numberCount = Math.floor(Math.random() * 13) + 1;
-// 	deckShuffled[i] = object[classCount][numberCount];
-// 	return deckShuffled;
-// }
 
 
+dealerHand = [];
+var dealerTotal = 0;
 
-var dealCard = function dealCard (hand) {
-	var randomNumber = Math.floor(Math.random() * fullDeck.length) + 1;
+playerHand = []
+var playerTotal = 0;
+
+var aced = false;
+
+var dealCard = function dealCard (hand, total) {
+	var randomNumber = Math.floor(Math.random() * fullDeck.length);
 	var dealtCard = fullDeck[randomNumber];
 	hand.push(dealtCard);
-	fullDeck.pop(dealtCard);
+	fullDeck.splice(randomNumber, 1);
+
+	if (hand[hand.length - 1].name === "A" && total + 11 <= 21) {
+		total += (hand[hand.length - 1].value + 10); 
+		console.log("ace");
+		return total;
+	}
+	else if ((total + hand[hand.length - 1].value > 21 && hand[0].name === "A" && aced === false) || (total + hand[hand.length - 1].value > 21 && hand[1].name === "A" && aced === false)) {
+		aced = true;
+		total += (hand[hand.length - 1].value - 10); 
+		console.log("ace - 10");
+		return total;
+	}
+
+	else {
+	total += hand[hand.length - 1].value;
+		return total;
+	}
+
 }
 
 
 
 //player console for buttons that hit stay and placebet
-var dealerHand = [];
-var dealerTotal = 0;
-
-var playerHand = []
-var playerTotal = 0;
 
 
 var dealerTurn = false;
 
 var playerBust = false;
+
+var blackJack = false;
 
 var playerCards = $("#playerCards");
 var dealerCards = $("#dealerCards");
@@ -104,63 +117,70 @@ var startRound = function startRound() {
 	dealerHand = [];
 	playerTotal = 0;
 	dealerTotal = 0;
+	playerBust = false;
+	dealerBust = false;
+	blackJack = false;
+	aced = false;
 
-	dealCard(playerHand);
-	dealCard(dealerHand);
-	dealCard(playerHand);
-	dealCard(dealerHand);
+	$("#winOrLose").text("");
 
-	playerTotal = playerHand[0].value + playerHand[1].value;
-	dealerTotal = dealerHand[0].value + dealerHand[1].value;
+
+	playerTotal = dealCard(playerHand, playerTotal);
+	dealerTotal = dealCard(dealerHand, dealerTotal);
+	playerTotal = dealCard(playerHand, playerTotal);
+	dealerTotal = dealCard(dealerHand, dealerTotal);
 
 
 	playerCards.text(playerTotal);
 	dealerCards.text(dealerTotal);
+
+	$("#buttons").toggle();
+
+
+	if (playerTotal === 21) {
+		blackJack = true;
+		endRound();
+	}
+	else if (dealerTotal === 21) {
+		endRound();
+	}
 }
 
 var endRound = function endRound() {
-	if (playerTotal === dealerTotal) {
-		console.log("push");
+	if (blackJack === true) {
+		playerCash += (betAmount.val() * 1.5) + betAmount.val();
+		$("#playerCash").text(playerCash);
+		$("#winOrLose").text("BlackJack!!!!");
 	}
-	else if ((playerBust === true && dealerBust === false) || dealerTotal > playerTotal) {
-		console.log("you lose");
+	else if (playerTotal === dealerTotal) {
+		playerCash += parseInt(betAmount.val());
+		$("#playerCash").text(playerCash);
+		$("#winOrLose").text("push");
 	}
-	else if (dealerBust === true && playerBust === false|| playerTotal > dealerTotal) {
-		console.log("you win");
+	else if ((dealerBust === true && playerBust === false)|| playerBust === false && playerTotal > dealerTotal) {
+		playerCash += (betAmount.val() * 2);
+		$("#playerCash").text(playerCash);
+		$("#winOrLose").text("you win");
 	} 
+	else if ((playerBust === true && dealerBust === false) || dealerBust === false && dealerTotal > playerTotal) {
+		$("#winOrLose").text("dealer wins");
+		$("#playerCash").text(playerCash);
 
+	}
+	$("#buttons").toggle();
+
+	if (fullDeck.length < 10) {
+		$("#winOrLose").text("shuffling deck");
+		fullDeck = createDeck(1);
+	}
 }
-
-
-var hit = $("#hit");
-
-hit.click(function() {
-	dealCard(playerHand);
-	playerTotal += playerHand[playerHand.length - 1].value;
-
-	if (playerTotal > 21) {
-		playerBust = true;
-		dealerTurn();
-	}	
-	playerCards.text(playerTotal);
-})
-
-var stay = $("#stay");
-
-stay.click(function() {
-	dealerTurn();
-})
-
-
-
 
 var dealerBust = false;
 
 var dealerTurn = function dealerTurn() {
 
 	if (dealerTotal < 17) {	
-		dealCard(dealerHand);
-		dealerTotal += dealerHand[dealerHand.length - 1].value;
+		dealerTotal = dealCard(dealerHand, dealerTotal);
 		dealerCards.text(dealerTotal);
 		dealerTurn();
 	}
@@ -174,6 +194,28 @@ var dealerTurn = function dealerTurn() {
 }
 
 
+var hit = $("#hit");
+
+hit.click(function() {
+	playerTotal = dealCard(playerHand, playerTotal);
+	playerCards.text(playerTotal);
+
+	if (playerTotal > 21) {
+		playerBust = true;
+		endRound();
+	}	
+
+})
+
+var stay = $("#stay");
+
+stay.click(function() {
+	dealerTurn();
+})
+
+
+
+
 
 
 
@@ -182,19 +224,22 @@ var dealerTurn = function dealerTurn() {
 
 
 var placeBet = $("#placeBet");
-var betAmount = $("#betAmount").val();
-var playerCash = $("#playerCash").text();
-var pot = $("#pot").text();
+var playerCash = 100;
+var betAmount = $("#betAmount");
+$("#playerCash").text(playerCash);
 
 placeBet.click(function() {
 	
-	if (betAmount <= playerCash) {
-		console.log("okay");
-		playerCash -= betAmount;
-		pot += betAmount;
+	if (betAmount.val() === "") {
+		$("#winOrLose").text("Please enter a bet");
+	}
+	else if (betAmount.val() <= playerCash) {
+		playerCash -= betAmount.val();
+		$("#playerCash").text(playerCash);
+		startRound();
 	}
 	else {
-		console.log("not enough");
+		$("#winOrLose").text("not enough cash");
 	}
 });
 

@@ -1,0 +1,41 @@
+body {
+	background-color: green;
+	text-align: center;
+}
+
+#dealer {
+	position:absolute;
+	margin-top:50px;
+	padding:0px 0px;
+}
+
+#status {
+	margin-top:150px;
+	height:100px;
+	width:200px;
+	padding:0px 0px;
+
+
+}
+
+#player {
+	text-align: center;
+	position: absolute;
+	margin-top:150px;
+	padding:0px 0px ;
+
+}
+#buttons {
+	display: none;
+}
+
+#playerCards {
+	height:100px;
+	width:50px;
+	padding:0px 0px;
+}
+#dealerCards {
+	height:100px;
+	width:50px;
+	padding:0px 0px;
+}
