@@ -148,7 +148,7 @@ var startRound = function startRound() {
 
 var endRound = function endRound() {
 	if (blackJack === true) {
-		playerCash += (betAmount.val() * 1.5) + betAmount.val();
+		playerCash += (parseInt(betAmount.val()) * 1.5) + parseInt(betAmount.val());
 		$("#playerCash").text(playerCash);
 		$("#winOrLose").text("BlackJack!!!!");
 	}
@@ -158,7 +158,7 @@ var endRound = function endRound() {
 		$("#winOrLose").text("push");
 	}
 	else if ((dealerBust === true && playerBust === false)|| playerBust === false && playerTotal > dealerTotal) {
-		playerCash += (betAmount.val() * 2);
+		playerCash += parseInt(betAmount.val()) * 2;
 		$("#playerCash").text(playerCash);
 		$("#winOrLose").text("you win");
 	} 
@@ -234,7 +234,7 @@ placeBet.click(function() {
 		$("#winOrLose").text("Please enter a bet");
 	}
 	else if (betAmount.val() <= playerCash) {
-		playerCash -= betAmount.val();
+		playerCash -= parseInt(betAmount.val());
 		$("#playerCash").text(playerCash);
 		startRound();
 	}
