@@ -1,4 +1,4 @@
-
+var numb
 //storing card numbers and suits in two different arrays
 var suits = ["hearts", "diamonds", "spades", "clubs"];
 
@@ -39,16 +39,18 @@ var cards = function cards(number, suit) {
 //can input number of decks desired in the createDeck arguement
 var createDeck = function createDeck(number) {
 	var cardArray = [];
-	for (var i = 1; i <= (13 * number) ; i++) {
-		var heartsCards = new cards(i, suits[0]);
-		cardArray.push(heartsCards);
-		var diamondsCads = new cards(i, suits[1]);
-		cardArray.push(diamondsCads);
-		var spadesCards = new cards(i, suits[2]);
-		cardArray.push(spadesCards);
-		var clubsCards = new cards(i, suits[3]);
-		cardArray.push(clubsCards);
+	for (var a = 0; a < number; a++) {
+		for (var i = 1; i <= 13 ; i++) {
+			var heartsCards = new cards(i, suits[0]);
+			cardArray.push(heartsCards);
+			var diamondsCads = new cards(i, suits[1]);
+			cardArray.push(diamondsCads);
+			var spadesCards = new cards(i, suits[2]);
+			cardArray.push(spadesCards);
+			var clubsCards = new cards(i, suits[3]);
+			cardArray.push(clubsCards);
 
+		}
 	}
 	return cardArray;
 	
@@ -56,10 +58,34 @@ var createDeck = function createDeck(number) {
 
 
 var fullDeck = [];
-fullDeck = createDeck(1);
 
 
 
+
+
+
+var playerCash = 0; 
+
+var begin = $("#begin");
+
+begin.click(function() {
+	if ($("#deckNumber").val() > 0 && $("#buyIn").val() > 0 && $("#namer").val() != "") {
+		var deckNumber = parseInt($("#deckNumber").val());
+		fullDeck = createDeck(deckNumber);
+		playerCash = parseInt($("#buyIn").val());
+		$("#playerCash").text(playerCash);
+		$("#startingPage").toggle();
+		$("#gameInput").toggle();
+		$("#name").text($("#namer").val())
+	}
+
+	else if ($("#deckNumber").val() === "" || $("#buyIn").val() === "") {
+		$("#warning").text("You must enter a value in all inputs");
+	}
+	else {
+		$("#warning").text("Did you enter your name?");
+	}
+})
 
 
 
@@ -134,7 +160,7 @@ var startRound = function startRound() {
 	playerCards.text(playerTotal);
 	dealerCards.text(dealerTotal);
 
-	$("#buttons").toggle();
+	$("#betButtons").toggle();
 
 
 	if (playerTotal === 21) {
@@ -150,7 +176,7 @@ var endRound = function endRound() {
 	if (blackJack === true) {
 		playerCash += (parseInt(betAmount.val()) * 1.5) + parseInt(betAmount.val());
 		$("#playerCash").text(playerCash);
-		$("#winOrLose").text("BlackJack!!!!");
+		$("#winOrLose").text("Winner Winner Chicken Dinner!");
 	}
 	else if (playerTotal === dealerTotal) {
 		playerCash += parseInt(betAmount.val());
@@ -167,7 +193,7 @@ var endRound = function endRound() {
 		$("#playerCash").text(playerCash);
 
 	}
-	$("#buttons").toggle();
+	$("#betButtons").toggle();
 
 	if (fullDeck.length < 10) {
 		$("#winOrLose").text("shuffling deck.... Shuffled, lets go!");
@@ -224,7 +250,6 @@ stay.click(function() {
 
 
 var placeBet = $("#placeBet");
-var playerCash = 100;
 var betAmount = $("#betAmount");
 $("#playerCash").text(playerCash);
 
