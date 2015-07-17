@@ -17,8 +17,8 @@
 	<body>
 			<div id="startingPage">
 				<div id="startingContent">
-					<h3 id="intro">Let's Play Some BlackJack!!!
-						Enter your name, buy-in amount and how many decks you would like to play with.
+					<h3 id="intro">Let's Play Some BlackJack!!!<br><br>
+						Enter your name, buy-in amount and how many decks you would like to use.<br>
 						When ready, click submit and let the fun begin!</h3>
 					<input id="namer" placeholder="Name"></input>
 					<input id="buyIn" placeholder="Enter buy-in amount"></input>
@@ -27,31 +27,33 @@
 					<button id="begin">Submit</input>
 				</div>
 			</div>
-			
-			<div id="dealer">
-				<h1>Dealer</h1>
-				<h1 id="dealerCards"></h1>
-			</div>
-			
-			<div id="status">
-				<h1 id="winOrLose"></h1>
-			</div>			
-
-			<div id="player">
-				<h1 id="playerCards"></h1>
-				<p id="playerCash"></p>
-				<div id="gameInput">
-					<input id="betAmount" placeholder="Place Your Bet"></input>
-					<button id="placeBet">Place Bet</button>
-					<div id="betButtons">
-						<button id="hit">Hit</button>
-						<button id="stay">Stay</button>
+			<div id="container">
+				<div id="dealer">
+					<h1>Dealer</h1>
+					<div class="cards" id="dealerCards">
 					</div>
 				</div>
-				<h1 id="name">Name<h1>
-			</div>
+				
+				<div id="status">
+					<h1 id="winOrLose"></h1>
+				</div>			
 
-		
+				<div id="player">
+					<div class="cards" id="playerCards"></div>
+					<p id="playerCash"></p>
+					<div id="gameInput">
+						<input id="betAmount" placeholder="Place Your Bet"></input>
+						<button id="placeBet">Place Bet</button>
+					</div>
+						<div id="betButtons">
+							<button id="hit">Hit</button>
+							<button id="stay">Stay</button>
+							<button id="double">Double-down</button>
+						</div>
+						<h1 id="name"><h1>
+				</div>
+
+			</div>
 
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
