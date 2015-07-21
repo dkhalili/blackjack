@@ -12,7 +12,7 @@ var images = {
 var cards = function cards(number, suit, image) {
 	if (number === 1){
 	this.name = "A";
-	this.value = number;
+	this.value = 11;
 	this.suit = suit;
 	this.image = image;
 	}
@@ -79,11 +79,12 @@ var playerCash = 0;
 var begin = $("#begin");
 var deckNumber = 1;
 begin.click(function() {
-	if ($("#deckNumber").val() > 0 && $("#buyIn").val() > 0 && $("#namer").val() != "") {
+	if ($("#deckNumber").val() > 0 && $("#namer").val() != "") {
 		deckNumber = parseInt($("#deckNumber").val());
 		fullDeck = createDeck(deckNumber);
-		playerCash = parseInt($("#buyIn").val());
-		$("#playerCash").text(playerCash);
+		count = 0;
+		playerCash = 500;
+		$("#playerCash").text("$" + playerCash);
 		$("#startingPage").toggle();
 		$("#container").toggle();
 		$("#name").text($("#namer").val())
@@ -108,10 +109,17 @@ var playerTotal = 0;
 //boolean function to be able to tell if there is an ace or now
 var aced = false;
 
+//count for card counting
+var count = 0;
+
+
 //function that deals cards to a specific hand and adjusts to hands total while printing the card image onto the screen
+
+var dealtCard;
+
 var dealCard = function dealCard (hand, total, cards) {
 	var randomNumber = Math.floor(Math.random() * fullDeck.length);
-	var dealtCard = fullDeck[randomNumber];
+	dealtCard = fullDeck[randomNumber];
 	hand.push(dealtCard);
 	fullDeck.splice(randomNumber, 1);
 	
@@ -123,22 +131,19 @@ var dealCard = function dealCard (hand, total, cards) {
 	cardImage.attr("src", dealtCard.image);
 	cards.append(cardImage);
 
-	//in order to determine if A is 1 or 11
-	if (hand[hand.length - 1].name === "A" && total + 11 <= 21) {
-		total += (hand[hand.length - 1].value + 10); 
-		return total;
-	}
-	else if ((total + hand[hand.length - 1].value > 21 && hand[0].name === "A" && aced === false) || (total + hand[hand.length - 1].value > 21 && hand[1].name === "A" && aced === false)) {
-		aced = true;
-		total += (hand[hand.length - 1].value - 10); 
-		return total;
-	}
-
-	else {
 	total += hand[hand.length - 1].value;
-		return total;
+
+	
+	//in order to determine if A is 1 or 11
+	for (var i = 0; i < (hand.length); i++) {
+		if (hand[i].name === "A" && total > 21 && hand[i].value === 11) {
+			hand[i].value = 1;
+			total -= 10; 
+		}
+
 	}
 
+	return total;
 }
 
 
@@ -168,13 +173,18 @@ var startRound = function startRound() {
 	dealerCards.empty();
 
 
+
 	$("#winOrLose").text("");
 
 
 	playerTotal = dealCard(playerHand, playerTotal, playerCards);
+	showConsole();
 	dealerTotal = dealCard(dealerHand, dealerTotal, dealerCards);
+	showConsole();
 	playerTotal = dealCard(playerHand, playerTotal, playerCards);
+	showConsole();
 	dealerTotal = dealCard(dealerHand, dealerTotal, dealerCards);
+	showConsole();
 
 	//setting the second dealer card to the back picture
 	$("#1").attr("src", "http://cdn.shopify.com/s/files/1/0200/7616/products/back_3098132_1024x1024.png?v=1383058425");
@@ -193,39 +203,45 @@ var startRound = function startRound() {
 
 //function that determines the winner at the end of the round and adds cash to playercash if necessary
 var endRound = function endRound() {
+
+	$("#1").attr("src", dealerHand[1].image);
+
 	if (blackJack === true) {
 		playerCash += (parseInt(betAmount.val()) * 1.5) + parseInt(betAmount.val());
-		$("#playerCash").text(playerCash);
-		$("#winOrLose").text("Winner Winner Chicken Dinner!");
+		$("#playerCash").text("$" + playerCash);
+		$("#winOrLose").text("BlackJack! Winner Winner Chicken Dinner!");
 	}
 	else if ((doubleD === true && playerBust === false && playerTotal > dealerTotal) || (doubleD === true && dealerBust === true && playerBust === false)) {
 		playerCash += parseInt(betAmount.val()) * 4;
-		$("#playerCash").text(playerCash);
-		$("#winOrLose").text("the risk paid off, double the reward!");
+		$("#playerCash").text("$" + playerCash);
+		$("#winOrLose").text("The risk paid off! Double the reward!");
 	}
 	else if (playerTotal === dealerTotal) {
 		playerCash += parseInt(betAmount.val());
-		$("#playerCash").text(playerCash);
-		$("#winOrLose").text("push");
+		$("#playerCash").text("$" + playerCash);
+		$("#winOrLose").text("Push");
 	}
 	else if ((dealerBust === true && playerBust === false)|| playerBust === false && playerTotal > dealerTotal) {
 		playerCash += parseInt(betAmount.val()) * 2;
-		$("#playerCash").text(playerCash);
-		$("#winOrLose").text("you win");
+		$("#playerCash").text("$" + playerCash);
+		$("#winOrLose").text($("#name").text() + " wins");
 	} 
 	else if ((playerBust === true && dealerBust === false) || dealerBust === false && dealerTotal > playerTotal) {
-		$("#winOrLose").text("dealer wins");
-		$("#playerCash").text(playerCash);
+		$("#playerCash").text("$" + playerCash);
+		$("#winOrLose").text("Dealer wins");
 
 	}
+
 	$("#betButtons").toggle();
 	$("#gameInput").toggle();
+
 
 	
 	//when the cards are almost out this "reshuffles" the deck. basically creates a new deck
 	if (fullDeck.length < 10) {
-		$("#winOrLose").text("shuffling deck.... Shuffled, lets go!");
+		$("#winOrLose").text("Shuffling deck.... Shuffled, place your bets!");
 		fullDeck = createDeck(deckNumber);
+		count = 0;
 	}
 }
 
@@ -240,6 +256,8 @@ var dealerTurn = function dealerTurn() {
 
 	if (dealerTotal < 17) {	
 		dealerTotal = dealCard(dealerHand, dealerTotal, dealerCards);
+		showConsole();
+
 		dealerTurn();
 	}
 	else if (dealerTotal > 21) {
@@ -256,12 +274,23 @@ var dealerTurn = function dealerTurn() {
 var hit = $("#hit");
 
 hit.click(function() {
-	playerTotal = dealCard(playerHand, playerTotal, playerCards);
+	if (playerHand.length === 2) {
+		double.toggle();
+	}
 
-	if (playerTotal > 21) {
+	playerTotal = dealCard(playerHand, playerTotal, playerCards);
+	showConsole();
+
+	if (playerTotal > 21 && playerHand.length === 3) {
+		double.toggle();
+		playerBust = true;
+		endRound();
+	}
+	else if (playerTotal > 21) {
 		playerBust = true;
 		endRound();
 	}	
+
 
 })
 
@@ -271,6 +300,11 @@ hit.click(function() {
 var stay = $("#stay");
 
 stay.click(function() {
+	
+	if (playerHand.length > 2) {
+		double.toggle();		
+	}
+	
 	dealerTurn();
 })
 
@@ -280,11 +314,14 @@ var double = $("#double");
 
 double.click(function() {
 	if (playerCash - parseInt(betAmount.val()) < 0) {
-		$("#winOrLose").text("not enough cash");
+		$("#winOrLose").text("Not enough money");
 	}
 	else {
 		playerCash -= parseInt(betAmount.val());
+		$("#playerCash").text("$" + playerCash);
 		playerTotal = dealCard(playerHand, playerTotal, playerCards);
+		showConsole();
+
 		if (playerTotal <= 21) {
 			doubleD = true;
 			dealerTurn();
@@ -310,6 +347,7 @@ var betAmount = $("#betAmount");
 $("#playerCash").text(playerCash);
 
 placeBet.click(function() {
+
 	if (playerCash === 0) {
 		$("#startingPage").toggle();
 		$("#container").toggle();
@@ -319,13 +357,60 @@ placeBet.click(function() {
 	}
 	else if (betAmount.val() <= playerCash) {
 		playerCash -= parseInt(betAmount.val());
-		$("#playerCash").text(playerCash);
+		$("#playerCash").text("$" + playerCash);
 		$("#gameInput").toggle();
 		startRound();
 	}
 	else {
-		$("#winOrLose").text("not enough cash");
+		$("#winOrLose").text("Not enough money");
 
 	}
 });
+
+
+
+var countCards = function countCards() {
+	
+	if (dealtCard.value < 7) {
+		return count += 1;
+
+	}
+	else if (dealtCard.value > 9) {
+		return count -= 1; 
+	}
+};
+
+
+
+
+
+
+
+
+var show = $("#show");
+var console = $("#consoleContent");
+
+
+var showConsole = function showConsole() {
+	$("#playerTotal").text("Your total : " + playerTotal);
+	
+	if (dealerHand.length > 0) {
+		$("#dealerTotal").text("Dealer showing : " + dealerHand[0].name);
+	}
+
+	countCards();
+	$("#count").text("Count(Hi-Lo) : " + count);
+
+}
+
+
+show.click(function() {
+	console.toggle();
+
+})
+
+
+
+
+
 
