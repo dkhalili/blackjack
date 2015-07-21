@@ -31,3 +31,8 @@ You play against the dealer to get your card total closest to 21, winner keeps a
 - Can view a console which reveals totals and numbers
 
 - A card counting function is shown in the console throughout the game
+
+###Languages Used:
+- HTML
+- CSS
+- Javascript/JQuery
