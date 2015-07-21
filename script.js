@@ -318,6 +318,7 @@ stay.click(function() {
 var double = $("#double");
 
 double.click(function() {
+
 	if (playerCash - parseInt(betAmount.val()) < 0) {
 		$("#winOrLose").text("Not enough money");
 	}

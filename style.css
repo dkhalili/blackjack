@@ -48,6 +48,7 @@ body {
 	text-align: center;
 	position: relative;
 	padding:50px 0px;
+	z-index: 1;
 
 }
 #gameInput {
@@ -90,13 +91,12 @@ img {
 
 #console {
 color: lightsteelblue;
-font-size: 20px;
+font-size: 15px;
 position: fixed;
-width: 400px;
+width: 200px;
 height:200px;
-top:70%;
-left: 800px;
-
+top:50%;
+left:0px;
 }
 
 
