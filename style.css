@@ -58,8 +58,8 @@ body {
 }
 img {
 	display: inline;
-	height: 125px;
-	width: 75px;
+	height: 150px;
+	width: 100px;
 }
 
 #cards {
@@ -89,12 +89,14 @@ img {
 
 
 #console {
-color: white;
+color: lightsteelblue;
 font-size: 20px;
-position: absolute;
+position: fixed;
 width: 400px;
 height:200px;
-top:50%;
+top:70%;
+left: 800px;
+
 }
 
 

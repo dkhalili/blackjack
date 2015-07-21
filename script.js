@@ -94,7 +94,7 @@ begin.click(function() {
 		$("#warning").text("You must enter a value in all inputs");
 	}
 	else {
-		$("#warning").text("Did you enter your name?");
+		$("#warning").text("Did you enter the right value?");
 	}
 })
 
@@ -204,8 +204,13 @@ var startRound = function startRound() {
 //function that determines the winner at the end of the round and adds cash to playercash if necessary
 var endRound = function endRound() {
 
+	//show hidden card at end of round
 	$("#1").attr("src", dealerHand[1].image);
+	//show dealer total at end of round
+	$("#dealerTotal").text("Dealer Total : " + dealerTotal);
 
+
+	//determines the winner and how much player wins
 	if (blackJack === true) {
 		playerCash += (parseInt(betAmount.val()) * 1.5) + parseInt(betAmount.val());
 		$("#playerCash").text("$" + playerCash);
@@ -369,6 +374,8 @@ placeBet.click(function() {
 
 
 
+
+//function to count cards hi-lo
 var countCards = function countCards() {
 	
 	if (dealtCard.value < 7) {
@@ -390,7 +397,7 @@ var countCards = function countCards() {
 var show = $("#show");
 var console = $("#consoleContent");
 
-
+//displays the total and count for each round and card picked
 var showConsole = function showConsole() {
 	$("#playerTotal").text("Your total : " + playerTotal);
 	
@@ -403,7 +410,7 @@ var showConsole = function showConsole() {
 
 }
 
-
+//clicking the show button to reveal and remove the console.
 show.click(function() {
 	console.toggle();
 
